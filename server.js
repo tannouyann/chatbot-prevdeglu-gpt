@@ -57,7 +57,7 @@ app.post('/api/chat', async (req, res) => {
   try {
     const { messages = [] } = req.body || {};
     const response = await client.responses.create({
-      model: process.env.OPENAI_MODEL || 'gpt-5-mini',
+      model: process.env.OPENAI_MODEL || 'gpt-4o-mini',
       input: [
         { role: 'system', content: SYSTEM_PROMPT },
         ...messages
