@@ -17,19 +17,19 @@
   </head>
   <body>
     <header>
-      <h1>Mon GPT personnalisé</h1>
+      <h1>Chatbot prévention de la déglutition</h1>
       <p>Posez une question, la réponse s’affichera ci-dessous.</p>
     </header>
 
     <div id="log" aria-live="polite"></div>
 
     <form id="chat">
-      <input id="q" placeholder="Ex. idées pour faciliter l’hydratation..." required style="flex:1" />
+      <input id="q" placeholder="Ex : Quelle est la bonne position pour manger ?" required style="flex:1" />
       <button>Envoyer</button>
     </form>
 
     <script>
-      const API_URL = (window.API_URL || '/api/chat'); // en local le serveur sert aussi l’API
+      const API_URL = (window.API_URL || 'https://chatbot-prevdeglu-gpt.onrender.com/api/chat');
       const log = document.getElementById('log');
       const form = document.getElementById('chat');
       const q = document.getElementById('q');
