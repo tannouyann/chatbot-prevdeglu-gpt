@@ -1,0 +1,70 @@
+<!doctype html>
+<html lang="fr">
+  <head>
+    <meta charset="utf-8" />
+    <title>Mon GPT personnalisé</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <style>
+      :root { color-scheme: light dark; }
+      body { font-family: system-ui, sans-serif; max-width: 760px; margin: 2rem auto; padding: 0 1rem; }
+      header { margin-bottom: 1rem; }
+      #log p { background:#f6f6f6; padding: .75rem; border-radius: .5rem; }
+      .me { background:#e8f0fe; }
+      form { display:flex; gap:.5rem; margin-top: 1rem; }
+      input, button { font-size: 1rem; padding:.6rem .8rem; }
+      #reply { white-space: pre-wrap; }
+    </style>
+  </head>
+  <body>
+    <header>
+      <h1>Mon GPT personnalisé</h1>
+      <p>Posez une question, la réponse s’affichera ci-dessous.</p>
+    </header>
+
+    <div id="log" aria-live="polite"></div>
+
+    <form id="chat">
+      <input id="q" placeholder="Ex. idées pour faciliter l’hydratation..." required style="flex:1" />
+      <button>Envoyer</button>
+    </form>
+
+    <script>
+      const API_URL = (window.API_URL || '/api/chat'); // en local le serveur sert aussi l’API
+      const log = document.getElementById('log');
+      const form = document.getElementById('chat');
+      const q = document.getElementById('q');
+      const history = [];
+
+      function addBubble(txt, cls='') {
+        const p = document.createElement('p');
+        p.className = cls;
+        p.textContent = txt;
+        log.appendChild(p);
+        log.scrollTop = log.scrollHeight;
+      }
+
+      form.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const userMessage = q.value.trim();
+        if (!userMessage) return;
+        addBubble('Vous : ' + userMessage, 'me');
+        history.push({ role: 'user', content: userMessage });
+        q.value = ''; q.focus();
+
+        try {
+          const r = await fetch(API_URL, {
+            method: 'POST',
+            headers: { 'Content-Type':'application/json' },
+            body: JSON.stringify({ messages: history })
+          });
+          const data = await r.json();
+          const reply = data.reply || '[aucune réponse]';
+          addBubble('GPT : ' + reply);
+          history.push({ role: 'assistant', content: reply });
+        } catch (e) {
+          addBubble('Erreur: ' + e.message);
+        }
+      });
+    </script>
+  </body>
+</html>
